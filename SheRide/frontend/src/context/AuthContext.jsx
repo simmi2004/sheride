@@ -109,6 +109,17 @@ export function AuthProvider({ children }) {
     })
   }, [])
 
+  // ── loginDemo — offline demo access ────────────────────────────────────────
+  const loginDemo = useCallback((role) => {
+    const demos = {
+      rider:  { id: 'u1', name: 'Priya Sharma', email: 'priya@sheride.com', phone: '+91 98765 43210', role: 'rider', verified: true },
+      driver: { id: 'd1', name: 'Meera Singh', email: 'meera@sheride.com', phone: '+91 98765 43211', role: 'driver', verified: true, rating: 4.9 },
+      admin:  { id: 'a1', name: 'Admin User', email: 'admin@sheride.com', role: 'admin' },
+    }
+    persist('demo-token', demos[role] ?? demos.rider, true)
+    return { success: true }
+  }, [])
+
   const value = {
     user,           // current user object or null
     token,          // raw JWT or null
@@ -118,6 +129,7 @@ export function AuthProvider({ children }) {
     isDriver: user?.role === 'driver',
     register,
     login,
+    loginDemo,
     logout,
     updateUser,
   }

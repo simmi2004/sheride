@@ -1,15 +1,21 @@
 @import "tailwindcss";
 
-/* ── Dark mode via class strategy ─────────────────────────────────────────── */
 @variant dark (&:where(.dark, .dark *));
 
-/* ── Global base ──────────────────────────────────────────────────────────── */
+@theme {
+  --color-lavender: #B57EDC;
+  --color-lavender-dark: #9B5FC7;
+  --color-soft-pink: #FFD6E8;
+  --color-soft-pink-dark: #3D2A35;
+  --color-purple-deep: #6B21A8;
+  --color-purple-glow: #A855F7;
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -17,9 +23,16 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #faf8fc;
+  color: #1f1633;
+}
+
+.dark body {
+  background: #0c0a12;
+  color: #f3eef8;
 }
 
 #root {
@@ -27,3 +40,111 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* ── Glassmorphism ─────────────────────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(181, 126, 220, 0.18);
+}
+
+.dark .glass {
+  background: rgba(24, 18, 36, 0.75);
+  border-color: rgba(181, 126, 220, 0.22);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 214, 232, 0.35) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(181, 126, 220, 0.2);
+  box-shadow: 0 8px 32px rgba(181, 126, 220, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-card {
+  background: linear-gradient(135deg, rgba(30, 22, 45, 0.92) 0%, rgba(61, 42, 53, 0.6) 100%);
+  border-color: rgba(181, 126, 220, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Gradients ─────────────────────────────────────────────────────────────── */
+.gradient-primary {
+  background: linear-gradient(135deg, #B57EDC 0%, #9B5FC7 50%, #7C3AED 100%);
+}
+
+.gradient-hero {
+  background: linear-gradient(160deg, #faf5ff 0%, #ffd6e8 40%, #f3e8ff 100%);
+}
+
+.dark .gradient-hero {
+  background: linear-gradient(160deg, #0c0a12 0%, #1a1028 50%, #2d1a3d 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #B57EDC, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Premium shadows ───────────────────────────────────────────────────────── */
+.shadow-premium {
+  box-shadow: 0 4px 24px rgba(181, 126, 220, 0.15), 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-premium-lg {
+  box-shadow: 0 12px 48px rgba(181, 126, 220, 0.2), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ── SOS pulse ─────────────────────────────────────────────────────────────── */
+@keyframes sos-pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.sos-pulse::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.4);
+  animation: sos-pulse-ring 1.5s ease-out infinite;
+}
+
+/* ── Skeleton ──────────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0e8f8 25%, #e8d5f5 50%, #f0e8f8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton {
+  background: linear-gradient(90deg, #1e1630 25%, #2a1f3d 50%, #1e1630 75%);
+  background-size: 200% 100%;
+}
+
+/* ── Map placeholder grid ──────────────────────────────────────────────────── */
+.map-grid {
+  background-image:
+    linear-gradient(rgba(181, 126, 220, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(181, 126, 220, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dark .map-grid {
+  background-image:
+    linear-gradient(rgba(181, 126, 220, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(181, 126, 220, 0.12) 1px, transparent 1px);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #B57EDC55; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #B57EDC; }
