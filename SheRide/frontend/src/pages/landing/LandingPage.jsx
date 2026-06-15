@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Shield, Eye, Users, Star, ChevronDown, CheckCircle,
-  Lock, Radio, Brain, MapPin,
+  Lock, Radio, Brain, MapPin, Sparkles, Bell
 } from 'lucide-react'
 import LandingNavbar from '../../components/layout/LandingNavbar'
 import LandingFooter from '../../components/layout/LandingFooter'
-import HeroIllustration from '../../components/landing/HeroIllustration'
 import Button from '../../components/ui/Button'
 import GlassCard from '../../components/ui/GlassCard'
 import Badge from '../../components/ui/Badge'
+import FareEstimator from '../../components/landing/FareEstimator'
+import GuardianSimulator from '../../components/landing/GuardianSimulator'
 import { TESTIMONIALS, FAQ_ITEMS } from '../../data/mockData'
 
 const fadeUp = {
@@ -35,18 +36,47 @@ const WHY_SAFER = [
   { title: '24/7 Safety Team', desc: 'Dedicated safety specialists monitoring rides and responding to emergencies around the clock.' },
 ]
 
+const LIVE_ACTIVITIES = [
+  { text: "Ride #409: Safe arrival in Bandra West 🛡️", badge: "Safe Trip" },
+  { text: "Riya K. matched with driver Sunita M. 💜", badge: "Match Found" },
+  { text: "ShePlus ride requested for Airport T2 ✨", badge: "Booking" },
+  { text: "Ride #922: Safety check-in verified 📱", badge: "Guardian Active" },
+  { text: "Alisha rated driver Meera S. 5-stars 🌟", badge: "Review" },
+  { text: "Emergency contacts verified for Divya R. 🔒", badge: "Account" },
+  { text: "Ride #812: OTP check successful ⚡", badge: "Safety Verify" }
+]
+
 export default function LandingPage() {
   const navigate = useNavigate()
   const [openFaq, setOpenFaq] = useState(null)
+  const [activityIndex, setActivityIndex] = useState(0)
+  const [showToast, setShowToast] = useState(true)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowToast(false)
+      setTimeout(() => {
+        setActivityIndex((prev) => (prev + 1) % LIVE_ACTIVITIES.length)
+        setShowToast(true)
+      }, 500)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
-    <div className="min-h-screen gradient-hero">
+    <div className="min-h-screen gradient-hero relative overflow-hidden">
       <LandingNavbar />
 
-      {/* Hero */}
+      {/* Hero with interactive FareEstimator */}
       <section className="pt-28 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-6"
+          >
             <Badge variant="lavender" className="mb-6">Women-only rides 💜</Badge>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-[1.1] tracking-tight mb-6">
               Ride with{' '}
@@ -69,8 +99,14 @@ export default function LandingPage() {
               ))}
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }}>
-            <HeroIllustration />
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="lg:col-span-6"
+          >
+            <FareEstimator />
           </motion.div>
         </div>
         <motion.div {...fadeUp} className="flex justify-center mt-16">
@@ -91,7 +127,7 @@ export default function LandingPage() {
             {WHY_SAFER.map((item, i) => (
               <motion.div key={item.title} {...fadeUp} transition={{ delay: i * 0.1 }}>
                 <GlassCard hover className="h-full">
-                  <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center mb-4 shadow-md">
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
@@ -103,7 +139,18 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Safety Features */}
+      {/* Interactive Safety Simulator Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-lavender/5 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <motion.div {...fadeUp} className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Experience Our Safety Core</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Click the options below to see how our active Ride Guardian detects and alerts during anomalous stops or route issues.</p>
+          </motion.div>
+          <GuardianSimulator />
+        </div>
+      </section>
+
+      {/* Safety Features Cards */}
       <section id="safety" className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50 dark:bg-white/[0.02]">
         <div className="max-w-7xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-14">
@@ -196,7 +243,7 @@ export default function LandingPage() {
               <motion.div key={i} {...fadeUp} transition={{ delay: i * 0.05 }}>
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full glass-card rounded-2xl p-5 text-left flex items-center justify-between gap-4"
+                  className="w-full glass-card rounded-2xl p-5 text-left flex items-center justify-between gap-4 focus:outline-none"
                 >
                   <span className="font-semibold text-gray-900 dark:text-white">{item.q}</span>
                   <ChevronDown className={`w-5 h-5 text-lavender flex-shrink-0 transition-transform ${openFaq === i ? 'rotate-180' : ''}`} />
@@ -214,7 +261,7 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section className="py-20 px-4">
-        <motion.div {...fadeUp} className="max-w-4xl mx-auto rounded-[2.5rem] gradient-primary p-12 text-center text-white">
+        <motion.div {...fadeUp} className="max-w-4xl mx-auto rounded-[2.5rem] gradient-primary p-12 text-center text-white shadow-premium-lg">
           <h2 className="text-3xl font-bold mb-4">Ready to ride with confidence?</h2>
           <p className="opacity-90 mb-8">Join thousands of women who travel safely every day with SheRide.</p>
           <Button size="lg" className="!bg-white !text-lavender hover:!bg-soft-pink" onClick={() => navigate('/signup')}>Get Started Today</Button>
@@ -222,6 +269,33 @@ export default function LandingPage() {
       </section>
 
       <LandingFooter />
+
+      {/* Floating System Activities Toast Feed */}
+      <div className="fixed bottom-4 left-4 z-40 hidden md:block w-72">
+        <AnimatePresence mode="wait">
+          {showToast && (
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -100, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-3 rounded-2xl border border-lavender/25 shadow-premium flex items-center gap-3"
+            >
+              <div className="w-8 h-8 rounded-xl bg-lavender/10 flex items-center justify-center text-lavender flex-shrink-0">
+                <Bell className="w-4 h-4 animate-swing" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[9px] font-bold uppercase text-lavender tracking-wide">
+                  {LIVE_ACTIVITIES[activityIndex].badge}
+                </span>
+                <p className="text-[11px] text-gray-700 dark:text-gray-200 font-medium truncate">
+                  {LIVE_ACTIVITIES[activityIndex].text}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
