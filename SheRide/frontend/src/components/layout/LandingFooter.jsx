@@ -4,7 +4,6 @@ import { Shield, Share2, Globe, Mail } from 'lucide-react'
 const FOOTER_LINKS = {
   Product: [
     { label: 'Safety Features', href: '#safety' },
-    { label: 'For Drivers', href: '/driver/register' },
   ],
   Company: [
     { label: 'About', href: '#about' },

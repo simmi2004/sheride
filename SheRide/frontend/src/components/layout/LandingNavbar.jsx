@@ -8,7 +8,6 @@ import Button from '../ui/Button'
 const LINKS = [
   { label: 'Safety', href: '#safety' },
   { label: 'Features', href: '#features' },
-  { label: 'Drivers', href: '#drivers' },
   { label: 'FAQ', href: '#faq' },
 ]
 

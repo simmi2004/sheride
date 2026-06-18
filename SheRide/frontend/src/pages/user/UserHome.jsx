@@ -9,12 +9,15 @@ import MapPlaceholder from '../../components/map/MapPlaceholder'
 import SafetyScoreCard from '../../components/safety/SafetyScoreCard'
 import VerificationBadge from '../../components/safety/VerificationBadge'
 import { useAuth } from '../../context/AuthContext'
-import { MOCK_RIDES, FAVORITE_PLACES } from '../../data/mockData'
+import { FAVORITE_PLACES } from '../../data/mockData'
+import { getLocalStorageRides } from '../../services/rideStorage'
 
 export default function UserHome() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const firstName = user?.name?.split(' ')[0] ?? 'there'
+  const rides = getLocalStorageRides()
+  const totalRidesCount = rides.filter(r => r.status === 'completed').length + 20 // add initial dummy count to match mock safety score / stats
 
   return (
     <PageTransition>
@@ -58,7 +61,7 @@ export default function UserHome() {
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4">
-          <StatCard icon={MapPin} label="Total Rides" value="24" delay={0.1} />
+          <StatCard icon={MapPin} label="Total Rides" value={totalRidesCount.toString()} delay={0.1} />
           <StatCard icon={Star} label="Avg Rating" value="4.8" delay={0.2} />
           <StatCard icon={Shield} label="Safety Score" value="94" delay={0.3} />
         </div>
@@ -71,12 +74,12 @@ export default function UserHome() {
             <Button variant="ghost" size="sm" onClick={() => navigate('/app/history')}>View all</Button>
           </div>
           <div className="space-y-3">
-            {MOCK_RIDES.slice(0, 3).map((ride) => (
+            {rides.slice(0, 3).map((ride) => (
               <GlassCard key={ride.id} padding="p-4" hover onClick={() => navigate('/app/history')}>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-sm text-gray-900 dark:text-white">{ride.from} → {ride.to}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{ride.date} · {ride.driver}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{ride.date} · {ride.driver} · <span className="capitalize font-semibold">{ride.status}</span></p>
                   </div>
                   <span className="font-bold text-lavender">₹{ride.fare}</span>
                 </div>

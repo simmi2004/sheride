@@ -25,9 +25,8 @@ export default function Navbar() {
 
   // Dashboard link per role
   const dashboardHref =
-    user?.role === 'driver' ? '/driver-dashboard' :
-    user?.role === 'admin'  ? '/admin-dashboard'  :
-    '/dashboard'
+    user?.role === 'admin'  ? '/admin/dashboard'  :
+    '/app/home'
 
   return (
     <nav

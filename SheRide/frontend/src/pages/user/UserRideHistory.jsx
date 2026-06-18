@@ -4,14 +4,14 @@ import PageTransition from '../../components/ui/PageTransition'
 import GlassCard from '../../components/ui/GlassCard'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
-import { MOCK_RIDES } from '../../data/mockData'
+import { getLocalStorageRides } from '../../services/rideStorage'
 
-const FILTERS = ['all', 'completed', 'cancelled']
+const FILTERS = ['all', 'ongoing', 'completed', 'cancelled']
 
 export default function UserRideHistory() {
   const [filter, setFilter] = useState('all')
   const navigate = useNavigate()
-  const rides = MOCK_RIDES.filter((r) => filter === 'all' || r.status === filter)
+  const rides = getLocalStorageRides().filter((r) => filter === 'all' || r.status === filter)
 
   return (
     <PageTransition>
@@ -32,7 +32,7 @@ export default function UserRideHistory() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <Badge variant={ride.status === 'completed' ? 'success' : 'danger'}>{ride.status}</Badge>
+                    <Badge variant={ride.status === 'completed' ? 'success' : ride.status === 'ongoing' ? 'warning' : 'danger'}>{ride.status}</Badge>
                     <span className="text-xs text-gray-500">{ride.id}</span>
                   </div>
                   <p className="font-semibold text-gray-900 dark:text-white">{ride.from} → {ride.to}</p>
@@ -42,6 +42,9 @@ export default function UserRideHistory() {
                   <p className="font-bold text-lavender">₹{ride.fare}</p>
                   {ride.status === 'completed' && !ride.rating && (
                     <Button variant="ghost" size="sm" className="mt-2" onClick={() => navigate(`/app/rate/${ride.id}`)}>Rate</Button>
+                  )}
+                  {ride.status === 'ongoing' && (
+                    <Button variant="ghost" size="sm" className="mt-2" onClick={() => navigate(`/app/rides/track/${ride.id}`)}>Track</Button>
                   )}
                   {ride.rating && <p className="text-xs text-amber-500 mt-1">★ {ride.rating}</p>}
                 </div>

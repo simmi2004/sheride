@@ -4,15 +4,12 @@ import ProtectedRoute from './components/ProtectedRoute'
 
 // Layouts
 import UserLayout from './components/layout/UserLayout'
-import DriverLayout from './components/layout/DriverLayout'
 import AdminLayout from './components/layout/AdminLayout'
 
 // Landing & Auth
 import LandingPage from './pages/landing/LandingPage'
 import UserLogin from './pages/auth/UserLogin'
 import UserRegister from './pages/auth/UserRegister'
-import DriverLogin from './pages/auth/DriverLogin'
-import DriverRegister from './pages/auth/DriverRegister'
 import AdminLogin from './pages/auth/AdminLogin'
 
 // User Panel
@@ -27,18 +24,6 @@ import UserNotifications from './pages/user/UserNotifications'
 import ProfileSettings from './pages/user/ProfileSettings'
 import SafetyCenter from './pages/user/SafetyCenter'
 import RateDriver from './pages/user/RateDriver'
-
-// Driver Panel
-import DriverDashboard from './pages/driver/DriverDashboard'
-import DriverRequests from './pages/driver/DriverRequests'
-import DriverNavigation from './pages/driver/DriverNavigation'
-import DriverEarnings from './pages/driver/DriverEarnings'
-import DriverHistory from './pages/driver/DriverHistory'
-import DriverVerification from './pages/driver/DriverVerification'
-import DriverVehicle from './pages/driver/DriverVehicle'
-import DriverRatings from './pages/driver/DriverRatings'
-import DriverNotifications from './pages/driver/DriverNotifications'
-import DriverSafety from './pages/driver/DriverSafety'
 
 // Admin Panel
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -61,15 +46,12 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<UserLogin />} />
           <Route path="/signup" element={<UserRegister />} />
-          <Route path="/driver/login" element={<DriverLogin />} />
-          <Route path="/driver/register" element={<DriverRegister />} />
           <Route path="/admin/login" element={<AdminLogin />} />
 
           {/* Legacy redirects */}
           <Route path="/dashboard" element={<Navigate to="/app/home" replace />} />
           <Route path="/book" element={<Navigate to="/app/search" replace />} />
           <Route path="/rides" element={<Navigate to="/app/history" replace />} />
-          <Route path="/driver-dashboard" element={<Navigate to="/driver/dashboard" replace />} />
           <Route path="/admin-dashboard" element={<Navigate to="/admin/dashboard" replace />} />
 
           {/* User Panel */}
@@ -90,25 +72,6 @@ export default function App() {
             <Route path="profile" element={<ProfileSettings />} />
             <Route path="safety" element={<SafetyCenter />} />
             <Route path="rate/:id" element={<RateDriver />} />
-          </Route>
-
-          {/* Driver Panel */}
-          <Route path="/driver" element={
-            <ProtectedRoute role="driver" loginPath="/driver/login">
-              <DriverLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<DriverDashboard />} />
-            <Route path="requests" element={<DriverRequests />} />
-            <Route path="navigation" element={<DriverNavigation />} />
-            <Route path="earnings" element={<DriverEarnings />} />
-            <Route path="history" element={<DriverHistory />} />
-            <Route path="verification" element={<DriverVerification />} />
-            <Route path="vehicle" element={<DriverVehicle />} />
-            <Route path="ratings" element={<DriverRatings />} />
-            <Route path="notifications" element={<DriverNotifications />} />
-            <Route path="safety" element={<DriverSafety />} />
           </Route>
 
           {/* Admin Panel */}

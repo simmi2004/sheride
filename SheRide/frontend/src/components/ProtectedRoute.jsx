@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children, role, loginPath = '/login' })
   }
 
   if (role && user.role !== role) {
-    const redirects = { rider: '/app/home', driver: '/driver/dashboard', admin: '/admin/dashboard' }
+    const redirects = { rider: '/app/home', admin: '/admin/dashboard' }
     return <Navigate to={redirects[user.role] ?? '/'} replace />
   }
 

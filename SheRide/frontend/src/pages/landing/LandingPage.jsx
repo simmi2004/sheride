@@ -88,7 +88,6 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Button size="lg" onClick={() => navigate('/signup')}>Get Started Free</Button>
-              <Button variant="secondary" size="lg" onClick={() => navigate('/driver/register')}>Become a Driver</Button>
             </div>
             <div className="flex items-center gap-6 mt-10">
               {[{ v: '50K+', l: 'Rides' }, { v: '4.9★', l: 'Rating' }, { v: '8K+', l: 'Drivers' }].map((s) => (
@@ -187,7 +186,7 @@ export default function LandingPage() {
                 </li>
               ))}
             </ul>
-            <Button className="mt-8" onClick={() => navigate('/driver/register')}>Join as a Driver</Button>
+            {/* Join as a driver button removed */}
           </motion.div>
           <motion.div {...fadeUp} className="grid grid-cols-2 gap-4">
             {['Meera S.', 'Anjali R.', 'Priya K.', 'Sunita M.'].map((name, i) => (

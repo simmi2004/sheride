@@ -3,12 +3,12 @@ import PageTransition from '../../components/ui/PageTransition'
 import GlassCard from '../../components/ui/GlassCard'
 import Badge from '../../components/ui/Badge'
 import Input from '../../components/ui/Input'
-import { ADMIN_USERS } from '../../data/mockData'
 import { Search } from 'lucide-react'
+import { getLocalStorageUsers } from '../../services/rideStorage'
 
 export default function AdminUsers() {
   const [search, setSearch] = useState('')
-  const users = ADMIN_USERS.filter((u) => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.includes(search))
+  const users = getLocalStorageUsers().filter((u) => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()))
 
   return (
     <PageTransition>

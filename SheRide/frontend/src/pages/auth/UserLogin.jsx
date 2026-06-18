@@ -120,7 +120,7 @@ export default function UserLogin() {
               Don't have an account? <Link to="/signup" className="text-lavender font-bold hover:underline">Sign up</Link>
             </p>
             <p className="text-center text-xs text-gray-400 mt-4 pt-4 border-t border-lavender/5">
-              Are you a driver? <Link to="/driver/login" className="text-lavender hover:underline font-semibold">Driver Login</Link> · <Link to="/admin/login" className="text-lavender hover:underline font-semibold">Admin Login</Link>
+              Are you an admin? <Link to="/admin/login" className="text-lavender hover:underline font-semibold">Admin Login</Link>
             </p>
           </GlassCard>
         </motion.div>

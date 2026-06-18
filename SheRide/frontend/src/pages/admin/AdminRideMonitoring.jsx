@@ -2,14 +2,12 @@ import { useState } from 'react'
 import PageTransition from '../../components/ui/PageTransition'
 import GlassCard from '../../components/ui/GlassCard'
 import Badge from '../../components/ui/Badge'
-import { MOCK_RIDES } from '../../data/mockData'
+import { getLocalStorageRides } from '../../services/rideStorage'
 
 export default function AdminRideMonitoring() {
   const [filter, setFilter] = useState('all')
   const statuses = ['all', 'ongoing', 'completed', 'cancelled']
-  const rides = MOCK_RIDES.map((r) => ({ ...r, status: r.status === 'completed' ? 'completed' : r.status }))
-  const ongoing = { id: 'R005', from: 'Connaught Place', to: 'Saket', driver: 'Meera S.', rider: 'Priya S.', status: 'ongoing', fare: 180 }
-  const allRides = [ongoing, ...rides]
+  const allRides = getLocalStorageRides()
   const filtered = filter === 'all' ? allRides : allRides.filter((r) => r.status === filter)
 
   return (

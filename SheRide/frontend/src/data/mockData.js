@@ -31,6 +31,7 @@ export const MOCK_ADMIN = {
 
 export const RIDE_OPTIONS = [
   { id: 'shego', name: 'SheGo', desc: 'Affordable everyday rides', icon: '🚗', eta: '3 min', price: 180, multiplier: 1 },
+  { id: 'shebike', name: 'SheBike', desc: 'Quick & eco-friendly two-wheeler', icon: '🏍️', eta: '2 min', price: 100, multiplier: 0.6 },
   { id: 'sheplus', name: 'ShePlus', desc: 'Premium comfort with extra safety', icon: '✨', eta: '5 min', price: 280, multiplier: 1.4 },
   { id: 'shexl', name: 'SheXL', desc: 'Spacious rides for groups', icon: '🚙', eta: '7 min', price: 350, multiplier: 1.8 },
 ]

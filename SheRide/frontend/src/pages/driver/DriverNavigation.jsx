@@ -9,7 +9,12 @@ export default function DriverNavigation() {
   return (
     <PageTransition className="fixed inset-0 lg:relative lg:inset-auto flex flex-col -m-4 md:-m-6">
       <div className="flex-1 relative">
-        <MapPlaceholder className="absolute inset-0 h-full" showRoute />
+        <MapPlaceholder
+          className="absolute inset-0 h-full"
+          pickupCoords={[28.6304, 77.2177]}
+          dropCoords={[28.5244, 77.2066]}
+          showRoute
+        />
         <div className="absolute top-4 left-4 right-4 z-10 max-w-lg mx-auto">
           <GlassCard padding="p-4" className="flex items-center gap-3">
             <Navigation className="w-5 h-5 text-lavender" />
