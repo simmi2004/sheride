@@ -7,6 +7,7 @@ import GlassCard from '../../components/ui/GlassCard'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import BottomSheet from '../../components/ui/BottomSheet'
+import MapPlaceholder from '../../components/map/MapPlaceholder'
 
 import { FAVORITE_PLACES } from '../../data/mockData'
 
@@ -264,26 +265,26 @@ export default function SearchRide() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full items-stretch">
         
-        {/* Left Side: Solid control panel (stacked on mobile) */}
-        <div className="order-1 lg:col-span-12 flex flex-col h-full z-30">
-          <GlassCard padding="p-6" className="flex flex-col h-full justify-between shadow-premium-lg border border-lavender/20 dark:border-white/10 rounded-3xl">
+        {/* Left Side: Solid control panel */}
+        <div className="order-1 lg:col-span-5 flex flex-col h-full z-30">
+          <GlassCard padding="p-6" className="flex flex-col h-full justify-between shadow-premium-lg border border-gray-100 dark:border-gray-850 rounded-3xl">
             
             {/* Header and inputs */}
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Where to?</h2>
-                <p className="text-xs text-gray-500 mt-1">Request a ride in just a few taps</p>
+                <h2 className="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight">Where to?</h2>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Request a ride in just a few taps</p>
               </div>
 
               {/* Uber-style connected input fields */}
               <div className="relative space-y-4">
                 {/* Visual Connector Line */}
-                <div className="absolute left-[19px] top-[24px] bottom-[24px] w-0.5 border-l-2 border-dashed border-lavender/35 dark:border-lavender/20" />
+                <div className="absolute left-[22px] top-[24px] bottom-[24px] w-0.5 border-l-2 border-dashed border-gray-300 dark:border-gray-700" />
                 
                 {/* Pickup Input Container */}
                 <div className="flex flex-col relative">
                   <div className="flex items-center gap-3 w-full">
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 z-10 flex-shrink-0 ml-[14px]" />
+                    <div className="w-3 h-3 rounded-full bg-white dark:bg-black border-2 border-black dark:border-white z-10 flex-shrink-0 ml-[16px]" />
                     {useGoogle ? (
                       <Autocomplete
                         className="flex-1"
@@ -320,7 +321,7 @@ export default function SearchRide() {
                     <button
                       onClick={handleUseCurrentLocation}
                       title="Use current location"
-                      className="p-2.5 text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all flex-shrink-0"
+                      className="p-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all flex-shrink-0"
                     >
                       <Navigation className="w-4 h-4" />
                     </button>
@@ -328,7 +329,7 @@ export default function SearchRide() {
 
                   {/* Local Suggestions dropdown for Pickup */}
                   {!useGoogle && showPickupSuggestions && pickupSuggestions.length > 0 && (
-                    <div className="absolute top-full left-[44px] right-0 bg-white dark:bg-slate-900 border border-lavender/25 rounded-2xl shadow-premium-lg mt-1.5 overflow-hidden z-40 max-h-48 overflow-y-auto">
+                    <div className="absolute top-full left-[44px] right-0 bg-white dark:bg-slate-900 border border-gray-150 rounded-2xl shadow-premium-lg mt-1.5 overflow-hidden z-40 max-h-48 overflow-y-auto">
                       {pickupSuggestions.map((s, idx) => (
                         <button
                           key={idx}
@@ -337,7 +338,7 @@ export default function SearchRide() {
                             setPickupCoords(s.coords)
                             setShowPickupSuggestions(false)
                           }}
-                          className="w-full text-left px-4 py-2.5 hover:bg-lavender/5 text-xs text-gray-700 dark:text-gray-200 border-b border-lavender/5 last:border-0 truncate"
+                          className="w-full text-left px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 text-xs text-gray-750 dark:text-gray-200 border-b border-gray-100 last:border-0 truncate"
                         >
                           📍 {s.description}
                         </button>
@@ -349,7 +350,7 @@ export default function SearchRide() {
                 {/* Destination Input Container */}
                 <div className="flex flex-col relative">
                   <div className="flex items-center gap-3 w-full">
-                    <MapPin className="w-5 h-5 text-red-500 z-10 flex-shrink-0 ml-2.5" />
+                    <div className="w-3 h-3 bg-black dark:bg-white z-10 flex-shrink-0 ml-[16px]" />
                     {useGoogle ? (
                       <Autocomplete
                         className="flex-1"
@@ -385,7 +386,7 @@ export default function SearchRide() {
                     )}
                     <button
                       onClick={() => geocodeAddress(destination, 'drop')}
-                      className="p-2.5 text-lavender hover:bg-lavender/10 rounded-xl flex-shrink-0"
+                      className="p-2.5 text-gray-750 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl flex-shrink-0"
                     >
                       {loadingGeocode ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                     </button>
@@ -393,7 +394,7 @@ export default function SearchRide() {
 
                   {/* Local Suggestions dropdown for Dropoff */}
                   {!useGoogle && showDropSuggestions && dropSuggestions.length > 0 && (
-                    <div className="absolute top-full left-[44px] right-0 bg-white dark:bg-slate-900 border border-lavender/25 rounded-2xl shadow-premium-lg mt-1.5 overflow-hidden z-40 max-h-48 overflow-y-auto">
+                    <div className="absolute top-full left-[44px] right-0 bg-white dark:bg-slate-900 border border-gray-150 rounded-2xl shadow-premium-lg mt-1.5 overflow-hidden z-40 max-h-48 overflow-y-auto">
                       {dropSuggestions.map((s, idx) => (
                         <button
                           key={idx}
@@ -402,7 +403,7 @@ export default function SearchRide() {
                             setDropCoords(s.coords)
                             setShowDropSuggestions(false)
                           }}
-                          className="w-full text-left px-4 py-2.5 hover:bg-lavender/5 text-xs text-gray-700 dark:text-gray-200 border-b border-lavender/5 last:border-0 truncate"
+                          className="w-full text-left px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 text-xs text-gray-750 dark:text-gray-200 border-b border-gray-100 last:border-0 truncate"
                         >
                           🏁 {s.description}
                         </button>
@@ -420,9 +421,9 @@ export default function SearchRide() {
                     <button
                       key={p.id}
                       onClick={() => handleFavoriteClick(p)}
-                      className="w-full flex items-center gap-3 p-2.5 rounded-2xl hover:bg-lavender/5 border border-transparent hover:border-lavender/10 text-left transition-all"
+                      className="w-full flex items-center gap-3 p-2.5 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 border border-transparent hover:border-gray-100 text-left transition-all"
                     >
-                      <div className="w-8 h-8 rounded-xl bg-lavender/10 flex items-center justify-center text-lavender flex-shrink-0 text-sm">
+                      <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-750 dark:text-gray-300 flex-shrink-0 text-sm">
                         {p.icon}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -439,9 +440,9 @@ export default function SearchRide() {
                         setDestination(p.address)
                         geocodeAddress(p.address, 'drop')
                       }}
-                      className="w-full flex items-center gap-3 p-2.5 rounded-2xl hover:bg-lavender/5 border border-transparent hover:border-lavender/10 text-left transition-all"
+                      className="w-full flex items-center gap-3 p-2.5 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 border border-transparent hover:border-gray-100 text-left transition-all"
                     >
-                      <div className="w-8 h-8 rounded-xl bg-lavender/10 flex items-center justify-center text-lavender flex-shrink-0 text-sm">
+                      <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-750 dark:text-gray-300 flex-shrink-0 text-sm">
                         {p.icon}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -455,18 +456,27 @@ export default function SearchRide() {
             </div>
 
             {/* Separate ride search button placed at the bottom, Uber-style */}
-            <div className="mt-6 pt-4 border-t border-lavender/10">
-              <Button
-                className="w-full py-4 text-sm font-bold shadow-premium gradient-primary hover:opacity-95 rounded-2xl flex items-center justify-center"
-                size="lg"
+            <div className="mt-6 pt-4 border-t border-gray-150 dark:border-gray-800">
+              <button
+                className="w-full py-4 text-sm font-extrabold bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-900 dark:hover:bg-neutral-100 transition-all rounded-2xl flex items-center justify-center cursor-pointer shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleSearch}
                 disabled={!destination}
               >
-                <Navigation className="w-4 h-4 mr-2 animate-pulse" /> Find Rides
-              </Button>
+                <Navigation className="w-4 h-4 mr-2" /> Find Rides
+              </button>
             </div>
 
           </GlassCard>
+        </div>
+
+        {/* Right Side: Sleek Grayscale Map (Side-by-Side on desktop) */}
+        <div className="order-2 lg:col-span-7 rounded-3xl overflow-hidden shadow-premium min-h-[350px] lg:min-h-0 relative border border-gray-150 dark:border-gray-850">
+          <MapPlaceholder
+            className="absolute inset-0 w-full h-full"
+            pickupCoords={pickupCoords}
+            dropCoords={dropCoords}
+            showRoute={!!(pickupCoords && dropCoords)}
+          />
         </div>
 
       </div>

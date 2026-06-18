@@ -4,8 +4,9 @@ import { GoogleMap, useJsApiLoader, Marker, DirectionsRenderer } from '@react-go
 const LIBRARIES = ['places']
 const DEFAULT_CENTER = { lat: 28.6139, lng: 77.209 } // New Delhi
 
-const GREEN_MARKER_URL = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'
-const RED_MARKER_URL = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png'
+// Premium Uber-style SVGs
+const UBER_PICKUP_SVG = 'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="black" stroke="white" stroke-width="3"/><circle cx="10" cy="10" r="3" fill="white"/></svg>'
+const UBER_DROPOFF_SVG = 'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" fill="black" stroke="white" stroke-width="3"/></svg>'
 
 export default function MapPlaceholder({
   className = '',
@@ -28,6 +29,17 @@ export default function MapPlaceholder({
   const useGoogle = isLoaded && hasKey && !loadError
   const [directions, setDirections] = useState(null)
   const googleMapRef = useRef(null)
+  const [nearbyCars, setNearbyCars] = useState([])
+
+  useEffect(() => {
+    const center = pickupLatLng || (dropLatLng ? dropLatLng : DEFAULT_CENTER)
+    const cars = [
+      { id: 'c1', lat: center.lat + 0.0012, lng: center.lng + 0.0015, heading: 45 },
+      { id: 'c2', lat: center.lat - 0.0010, lng: center.lng - 0.0018, heading: 120 },
+      { id: 'c3', lat: center.lat + 0.0016, lng: center.lng - 0.0008, heading: 280 },
+    ]
+    setNearbyCars(cars)
+  }, [pickupCoords, dropCoords])
 
   // Parse coords helper
   const getLatLng = (coords) => {
@@ -106,6 +118,7 @@ export default function MapPlaceholder({
   const leafletPickupMarkerRef = useRef(null)
   const leafletDropMarkerRef = useRef(null)
   const leafletRouteLineRef = useRef(null)
+  const leafletCarMarkersRef = useRef([])
 
   useEffect(() => {
     if (useGoogle) return
@@ -166,6 +179,7 @@ export default function MapPlaceholder({
         leafletPickupMarkerRef.current = null
         leafletDropMarkerRef.current = null
         leafletRouteLineRef.current = null
+        leafletCarMarkersRef.current = []
       }
     }
   }, [leafletLoaded, useGoogle])
@@ -177,16 +191,18 @@ export default function MapPlaceholder({
     const L = window.L
     const map = leafletMapInstanceRef.current
 
-    const pickupIcon = L.icon({
-      iconUrl: GREEN_MARKER_URL,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
+    const pickupIcon = L.divIcon({
+      className: 'custom-leaflet-pickup',
+      html: `<div style="width: 18px; height: 18px; background: black; border: 3px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><div style="width: 6px; height: 6px; background: white; border-radius: 50%;"></div></div>`,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9]
     })
 
-    const dropIcon = L.icon({
-      iconUrl: RED_MARKER_URL,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
+    const dropIcon = L.divIcon({
+      className: 'custom-leaflet-drop',
+      html: `<div style="width: 16px; height: 16px; background: black; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
     })
 
     // Sync pickup marker
@@ -246,9 +262,9 @@ export default function MapPlaceholder({
         leafletRouteLineRef.current.setLatLngs(points)
       } else {
         const line = L.polyline(points, {
-          color: '#B57EDC',
-          weight: 4.5,
-          dashArray: '8, 8',
+          color: '#111111',
+          weight: 5,
+          opacity: 0.9,
           lineCap: 'round'
         }).addTo(map)
         leafletRouteLineRef.current = line
@@ -265,6 +281,31 @@ export default function MapPlaceholder({
         map.setView(pickupCoords, 13)
       }
     }
+
+    // Sync nearby cars
+    leafletCarMarkersRef.current.forEach(marker => map.removeLayer(marker))
+    leafletCarMarkersRef.current = []
+
+    const carIcon = L.divIcon({
+      className: 'custom-leaflet-car',
+      html: `<div style="font-size: 20px; filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.3)); transform: rotate(15deg); cursor: pointer;">🚗</div>`,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    })
+
+    const currentCoords = pickupCoords && pickupCoords[0] ? pickupCoords : (dropCoords && dropCoords[0] ? dropCoords : [28.6139, 77.209])
+    const mockOffset = [
+      [0.0012, 0.0015],
+      [-0.0010, -0.0018],
+      [0.0016, -0.0008]
+    ]
+
+    mockOffset.forEach((offset, idx) => {
+      const carLat = currentCoords[0] + offset[0]
+      const carLng = currentCoords[1] + offset[1]
+      const marker = L.marker([carLat, carLng], { icon: carIcon }).addTo(map)
+      leafletCarMarkersRef.current.push(marker)
+    })
   }, [leafletLoaded, pickupCoords, dropCoords, showRoute, interactive, useGoogle])
 
   return (
@@ -283,30 +324,71 @@ export default function MapPlaceholder({
             mapTypeControl: false,
             styles: [
               {
-                featureType: 'administrative.land_parcel',
-                elementType: 'labels',
-                stylers: [{ visibility: 'off' }],
+                "elementType": "geometry",
+                "stylers": [{ "color": "#f5f5f5" }]
               },
               {
-                featureType: 'poi',
-                elementType: 'labels.text',
-                stylers: [{ visibility: 'off' }],
+                "elementType": "labels.icon",
+                "stylers": [{ "visibility": "off" }]
               },
               {
-                featureType: 'road',
-                elementType: 'labels.icon',
-                stylers: [{ visibility: 'off' }],
+                "elementType": "labels.text.fill",
+                "stylers": [{ "color": "#616161" }]
               },
               {
-                featureType: 'road.local',
-                elementType: 'labels',
-                stylers: [{ visibility: 'off' }],
+                "elementType": "labels.text.stroke",
+                "stylers": [{ "color": "#f5f5f5" }]
               },
               {
-                featureType: 'transit',
-                stylers: [{ visibility: 'off' }],
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels",
+                "stylers": [{ "visibility": "off" }]
               },
-            ],
+              {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [{ "color": "#eeeeee" }]
+              },
+              {
+                "featureType": "poi",
+                "elementType": "labels.text",
+                "stylers": [{ "visibility": "off" }]
+              },
+              {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [{ "color": "#ffffff" }]
+              },
+              {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.fill",
+                "stylers": [{ "color": "#757575" }]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [{ "color": "#dadada" }]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [{ "color": "#616161" }]
+              },
+              {
+                "featureType": "road.local",
+                "elementType": "labels",
+                "stylers": [{ "visibility": "off" }]
+              },
+              {
+                "featureType": "transit",
+                "stylers": [{ "visibility": "off" }]
+              },
+              {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{ "color": "#c9c9c9" }]
+              }
+            ]
           }}
         >
           {pickupLatLng && (
@@ -318,11 +400,11 @@ export default function MapPlaceholder({
                   onPickupChange([e.latLng.lat(), e.latLng.lng()])
                 }
               }}
-              icon={{
-                url: GREEN_MARKER_URL,
-                scaledSize: new window.google.maps.Size(26, 41),
-                anchor: new window.google.maps.Point(13, 41),
-              }}
+              icon={window.google ? {
+                url: UBER_PICKUP_SVG,
+                scaledSize: new window.google.maps.Size(20, 20),
+                anchor: new window.google.maps.Point(10, 10),
+              } : undefined}
             />
           )}
 
@@ -335,13 +417,28 @@ export default function MapPlaceholder({
                   onDropChange([e.latLng.lat(), e.latLng.lng()])
                 }
               }}
-              icon={{
-                url: RED_MARKER_URL,
-                scaledSize: new window.google.maps.Size(26, 41),
-                anchor: new window.google.maps.Point(13, 41),
-              }}
+              icon={window.google ? {
+                url: UBER_DROPOFF_SVG,
+                scaledSize: new window.google.maps.Size(20, 20),
+                anchor: new window.google.maps.Point(10, 10),
+              } : undefined}
             />
           )}
+
+          {/* Render nearby cars */}
+          {nearbyCars.map((car) => (
+            <Marker
+              key={car.id}
+              position={{ lat: car.lat, lng: car.lng }}
+              icon={window.google ? {
+                url: 'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>',
+              } : undefined}
+              label={window.google ? {
+                text: '🚗',
+                fontSize: '22px'
+              } : undefined}
+            />
+          ))}
 
           {directions && (
             <DirectionsRenderer
@@ -349,9 +446,9 @@ export default function MapPlaceholder({
               options={{
                 suppressMarkers: true,
                 polylineOptions: {
-                  strokeColor: '#B57EDC',
-                  strokeOpacity: 0.8,
-                  strokeWeight: 6,
+                  strokeColor: '#222222',
+                  strokeOpacity: 0.9,
+                  strokeWeight: 5,
                 },
               }}
             />
